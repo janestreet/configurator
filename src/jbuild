@@ -1,0 +1,5 @@
+(library
+ ((name        configurator)
+  (public_name configurator)
+  (libraries (base stdio unix))
+  (preprocess (pps (ppx_base)))))

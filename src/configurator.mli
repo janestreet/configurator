@@ -39,7 +39,7 @@ module C_define : sig
     [@@deriving compare, sexp]
   end
 
-  (** Inport some #define from the given header files. For instance:
+  (** Import some #define from the given header files. For instance:
 
       {[
         # C.C_define.import c ~includes:"caml/config.h" ["ARCH_SIXTYFOUR", Switch];;
@@ -72,6 +72,22 @@ module C_define : sig
     -> ?protection_var:string
     -> (string * Value.t) list -> unit
 end
+
+module Pkg_config : sig
+  type configurator = t
+  type t
+
+  (** Returns [None] if pkg-config is not installed *)
+  val get : configurator -> t option
+
+  type package_conf =
+    { libs   : string list
+    ; cflags : string list
+    }
+
+  (** Returns [None] if [package] is not available *)
+  val query : t -> package:string -> package_conf option
+end with type configurator := t
 
 (** Typical entry point for configurator programs *)
 val main

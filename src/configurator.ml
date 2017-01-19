@@ -410,9 +410,12 @@ module Pkg_config = struct
     in
     if run_ok c ~dir (sprintf "%s%s %s" env pkg_config package) then
       let run what =
-        run_capture_exn c ~dir (sprintf "%s%s %s %s" env pkg_config what package)
-        |> String.strip
-        |> String.split ~on:' '
+        match
+          String.strip
+            (run_capture_exn c ~dir (sprintf "%s%s %s %s" env pkg_config what package))
+        with
+        | "" -> []
+        | s  -> String.split s ~on:' '
       in
       Some
         { libs   = run "--libs"

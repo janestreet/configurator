@@ -223,10 +223,15 @@ let create ?dest_dir ?ocamlc ?(log=ignore) name =
       die "variable %S present twice in the output of `%s`" key ocamlc_config_cmd
   in
   let get = get_ocaml_config_var_exn ocamlc_config ~ocamlc_config_cmd in
+  let c_compiler =
+    match Map.find ocamlc_config "c_compiler" with
+    | Some c_comp -> c_comp ^ " " ^ get "ocamlc_cflags"
+    | None -> get "bytecomp_c_compiler"
+  in
   { t with
     ocamlc_config
   ; ext_obj    = get "ext_obj"
-  ; c_compiler = get "bytecomp_c_compiler"
+  ; c_compiler
   ; stdlib_dir = get "standard_library"
   ; ccomp_type = get "ccomp_type"
   }

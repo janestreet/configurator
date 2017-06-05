@@ -344,7 +344,7 @@ module C_define = struct
         match (value : Value.t) with
         | Switch false -> sprintf "#undef  %s" name
         | Switch true  -> sprintf "#define %s" name
-        | Int    n     -> sprintf "#define %s %d" name n
+        | Int    n     -> sprintf "#define %s (%d)" name n
         | String s     -> sprintf "#define %s %S" name s)
     in
     let lines =

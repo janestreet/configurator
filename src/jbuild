@@ -3,6 +3,6 @@
   (public_name configurator)
   (flags (:standard -safe-string))
   (libraries (base stdio unix))
-  (preprocess (pps (ppx_base ppx_driver.runner)))))
+  (preprocess no_preprocessing)))
 
 (jbuild_version 1)

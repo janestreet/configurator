@@ -28,7 +28,11 @@ module C_define : sig
       | Switch (** defined/undefined *)
       | Int
       | String
-    [@@deriving compare, sexp]
+
+    val sexp_of_t : t -> Sexp.t
+    val t_of_sexp : Sexp.t -> t
+
+    val compare : t -> t -> int
   end
 
   module Value : sig
@@ -36,7 +40,11 @@ module C_define : sig
       | Switch of bool
       | Int    of int
       | String of string
-    [@@deriving compare, sexp]
+
+    val sexp_of_t : t -> Sexp.t
+    val t_of_sexp : Sexp.t -> t
+
+    val compare : t -> t -> int
   end
 
   (** Import some #define from the given header files. For instance:

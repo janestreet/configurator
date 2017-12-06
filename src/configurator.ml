@@ -285,7 +285,27 @@ module C_define = struct
       | Switch
       | Int
       | String
-    [@@deriving compare, sexp]
+
+    let compare x y =
+      match x, y with
+      | Switch, Switch -> 0
+      | Int, Int -> 0
+      | String, String -> 0
+      | Switch, (Int | String) -> 1
+      | (Int | String), Switch -> -1
+      | Int, String -> 1
+      | String, Int -> -1
+
+    let sexp_of_t = function
+      | Switch -> Sexp.Atom "switch"
+      | Int -> Sexp.Atom "int"
+      | String -> Sexp.Atom "string"
+
+    let t_of_sexp = function
+      | Sexp.Atom "switch" -> Switch
+      | Sexp.Atom "int" -> Int
+      | Sexp.Atom "string" -> String
+      | s -> raise (Sexp.Of_sexp_error (Failure "C_define.Type.t_of_sexp", s))
   end
 
   module Value = struct
@@ -293,7 +313,31 @@ module C_define = struct
       | Switch of bool
       | Int    of int
       | String of string
-    [@@deriving compare, sexp]
+
+    let compare x y =
+      match x, y with
+      | Switch x, Switch y -> Bool.compare x y
+      | Int x, Int y -> Int.compare x y
+      | String x, String y -> String.compare x y
+      | Switch _, (Int _ | String _) -> 1
+      | (Int _ | String _), Switch _ -> -1
+      | Int _, String _ -> 1
+      | String _, Int _ -> -1
+
+    let sexp_of_t =
+      let open Sexp in
+      function
+      | Switch b -> List [Atom "switch"; Bool.sexp_of_t b]
+      | Int i -> List [Atom "int"; Int.sexp_of_t i]
+      | String s -> List [Atom "string"; String.sexp_of_t s]
+
+    let t_of_sexp =
+      let open Sexp in
+      function
+      | List [Atom "switch"; x] -> Switch (Bool.t_of_sexp x)
+      | List [Atom "int"; x] -> Int (Int.t_of_sexp x)
+      | List [Atom "string"; x] -> String (String.t_of_sexp x)
+      | s -> raise (Sexp.Of_sexp_error (Failure "C_define.Value.t_of_sexp", s))
   end
 
   let import t ?c_flags ?link_flags ~includes vars =

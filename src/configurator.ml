@@ -76,7 +76,7 @@ module Find_in_path = struct
 
   let get_path () =
     match Sys.getenv "PATH" with
-    | exception Not_found -> []
+    | exception Caml.Not_found -> []
     | s -> String.split s ~on:path_sep
 
   let exe = if Sys.win32 then ".exe" else ""

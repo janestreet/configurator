@@ -76,7 +76,7 @@ module Find_in_path = struct
 
   let get_path () =
     match Sys.getenv "PATH" with
-    | exception Caml.Not_found -> []
+    | exception (Not_found_s _ | Caml.Not_found) -> []
     | s -> String.split s ~on:path_sep
 
   let exe = if Sys.win32 then ".exe" else ""
@@ -387,7 +387,7 @@ module C_define = struct
           | 'A'..'Z' | '0'..'9' as c -> c
           | _ -> '_')
     in
-    let vars = List.sort vars ~cmp:(fun (a, _) (b, _) -> String.compare a b) in
+    let vars = List.sort vars ~compare:(fun (a, _) (b, _) -> String.compare a b) in
     let lines =
       List.map vars ~f:(fun (name, value) ->
         match (value : Value.t) with

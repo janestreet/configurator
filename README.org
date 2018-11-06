@@ -32,5 +32,5 @@ let () =
     let has_clock_gettime = C.c_test c clock_gettime_code ~link_flags:["-lrt"] in
 
     C.C_define.gen_header_file c ~fname:"config.h"
-      [ "HAS_CKOCK_GETTIME", Switch has_ckock_gettime ]);
+      [ "HAS_CLOCK_GETTIME", Switch has_clock_gettime ]);
 #+end_src
